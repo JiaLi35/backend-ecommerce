@@ -23,18 +23,26 @@ const {
   query params is everything after the ? mark
 */
 router.get("/", async (req, res) => {
-  // query params
-  const category = req.query.category;
-  const products = await getProducts(category);
-
-  res.status(200).send(products);
+  try {
+    // query params
+    const page = req.query.page;
+    const category = req.query.category;
+    const products = await getProducts(category, page);
+    res.status(200).send(products);
+  } catch (error) {
+    res.status(400).send({ error: "Unknown error" });
+  }
 });
 
 //   GET /products/:id - get a specific product
 router.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const product = await getProduct(id);
-  res.status(200).send(product);
+  try {
+    const id = req.params.id;
+    const product = await getProduct(id);
+    res.status(200).send(product);
+  } catch (error) {
+    res.status(400).send({ error: "Unknown error" });
+  }
 });
 
 /*
