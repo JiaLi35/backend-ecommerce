@@ -59,6 +59,7 @@ router.post("/", async (req, res) => {
     const description = req.body.description;
     const price = req.body.price;
     const category = req.body.category;
+    const image = req.body.image;
 
     // check error - make sure all the fields are not empty
     if (!name || !price || !category) {
@@ -70,7 +71,7 @@ router.post("/", async (req, res) => {
     res
       .status(200)
       // short hand
-      .send(await addProduct(name, description, price, category));
+      .send(await addProduct(name, description, price, category, image));
   } catch (error) {
     res.status(400).send({ message: "Unknown error" });
   }
@@ -84,6 +85,7 @@ router.put("/:id", async (req, res) => {
     const description = req.body.description;
     const price = req.body.price;
     const category = req.body.category;
+    const image = req.body.image;
 
     // check error - make sure all the fields are not empty
     if (!name || !price || !category) {
@@ -94,7 +96,7 @@ router.put("/:id", async (req, res) => {
 
     res
       .status(200)
-      .send(await updateProduct(id, name, description, price, category));
+      .send(await updateProduct(id, name, description, price, category, image));
   } catch (error) {
     res.status(400).send({ message: "Unknown error" });
   }

@@ -22,13 +22,14 @@ async function getProduct(id) {
 }
 
 // add a product
-async function addProduct(name, description, price, category) {
+async function addProduct(name, description, price, category, image) {
   // create new product
   const newProduct = new Product({
     name,
     description,
     price,
     category,
+    image,
   });
   // save the new product into mongodb
   await newProduct.save(); // clicking the "save" button
@@ -36,7 +37,7 @@ async function addProduct(name, description, price, category) {
 }
 
 // update a product by id
-async function updateProduct(id, name, description, price, category) {
+async function updateProduct(id, name, description, price, category, image) {
   return await Product.findByIdAndUpdate(
     id,
     {
@@ -44,6 +45,7 @@ async function updateProduct(id, name, description, price, category) {
       description: description,
       price: price,
       category: category,
+      image: image,
     },
     {
       new: true, // return the updated data
