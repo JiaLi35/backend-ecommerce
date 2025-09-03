@@ -17,7 +17,7 @@ router.post("/login", async (req, res) => {
     res.status(200).send(user);
   } catch (error) {
     console.log(error);
-    res.status(400).send({ message: "Unknown Error" });
+    res.status(400).send({ message: error.message });
   }
 });
 

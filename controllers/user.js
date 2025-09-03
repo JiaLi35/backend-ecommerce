@@ -1,8 +1,43 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
-const login = async (email, password) => {};
+const login = async (email, password) => {
+  // 1. check if the email provided is in the system
+  const user = await User.findOne({ email: email });
+  // if not exist, throw an error
+  if (!user) {
+    throw new Error("Inavlid email or password");
+  }
+
+  // if exists, compare the passwords
+  const passwordMatch = bcrypt.compareSync(password, user.password);
+  if (!passwordMatch) {
+    throw new Error("Invalid email or password");
+  }
+
+  // generate the JWT token
+  let token = jwt.sign(
+    {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+    process.env.JWT_SECRET, // secret
+    { expiresIn: 60 * 60 * 8 }
+  );
+
+  // if password is correct, return the user data
+  return {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    token: token,
+  };
+};
 
 const signup = async (name, email, password) => {
   // 1. check if email provided already exists or not
@@ -13,6 +48,7 @@ const signup = async (name, email, password) => {
       "Email already exists. Please use another email or login with your existing email."
     );
   }
+
   // 2. create new user
   const newUser = new User({
     name: name,
@@ -22,8 +58,27 @@ const signup = async (name, email, password) => {
 
   // 3. save the user
   await newUser.save();
-  // 4. return the user
-  return newUser;
+
+  // 4. generate the JWT token
+  let token = jwt.sign(
+    {
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+    },
+    process.env.JWT_SECRET, // secret
+    { expiresIn: 60 * 60 * 8 }
+  );
+
+  // 5. return the new user data
+  return {
+    _id: newUser._id,
+    name: newUser.name,
+    email: newUser.email,
+    role: newUser.role,
+    token: token,
+  };
 };
 
 module.exports = {
